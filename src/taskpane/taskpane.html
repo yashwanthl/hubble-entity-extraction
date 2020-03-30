@@ -1,0 +1,55 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. -->
+<!-- This file shows how to design a first-run page that provides a welcome screen to the user about the features of the add-in. -->
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Hubble Task Pane Add-in</title>
+
+        <!-- Office JavaScript API -->
+        <script type="text/javascript"
+            src="https://appsforoffice.microsoft.com/lib/1.1/hosted/office.js"></script>
+        <script
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <!-- For more information on Office UI Fabric, visit https://developer.microsoft.com/fabric. -->
+        <link rel="stylesheet"
+            href="https://static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.1/css/fabric.min.css"
+            />
+
+        <!-- Template styles -->
+        <link href="taskpane.css" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body class="ms-font-m ms-welcome ms-Fabric">
+        <div class="div-header">
+                <img class="icon-header" src="../../assets/logo-hubble.png"
+                alt="Walmart ATX" title="Walmart ATX" />
+        </div>
+        <div>
+            <section id="sideload-msg" class="ms-welcome__main">
+                <h2 class="ms-font-xl">Please wait while hubble is loading...</h2>
+            </section>
+        </div>
+        <div>
+            <main id="app-body" class="ms-welcome__main" style="display: none;">
+                <div id="Entity" class="tab-container menu">
+                    <h2>Entites from this email</h2>
+                    <div>
+                        <div id="btnGetEntities" class="ms-action-buttons">Get Entities</div>
+                    </div>
+                    <div id="entityResults">
+                        <!-- <div class="entity-sentence">We are aligned to the clearance funding of $<span style="color:#7128DA; font-weight:bold">202,548</span><span><sub style="font-weight: bold">MONEY</sub></span></div> -->
+                    </div>
+                </div>
+
+            </main>
+        </div>
+        <script>
+
+    </script>
+    </body>
+</html>
