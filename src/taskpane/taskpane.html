@@ -24,7 +24,7 @@
 
     </head>
 
-    <body class="ms-font-m ms-welcome ms-Fabric">
+    <body class="ms-font-m ms-welcome ms-Fabric" style="font-family:sans-serif">
         <div class="div-header">
                 <img class="icon-header" src="../../assets/logo-hubble.png"
                 alt="Walmart ATX" title="Walmart ATX" />
@@ -36,20 +36,50 @@
         </div>
         <div>
             <main id="app-body" class="ms-welcome__main" style="display: none;">
-                <div id="Entity" class="tab-container menu">
-                    <h2>Entites from this email</h2>
-                    <div>
-                        <div id="btnGetEntities" class="ms-action-buttons">Get Entities</div>
-                    </div>
+                <div>
+                    <a href="javascript:void(0)" class="tablink menu-tab
+                        menu-active" onclick="toggleMenu(event,
+                        'Entity-Only');">
+                        Entities
+                    </a>
+
+                    <a href="javascript:void(0)" class="tablink menu-tab"
+                        onclick="toggleMenu(event,
+                        'Entity-With-Content');">
+                        With Text
+                    </a>
+                </div>
+
+                <div id="Entity-Only" class="tab-container menu"
+                    style="display:block">
+                    <h2>Display Only Enitites</h2>
+
+                </div>
+
+                <div id="Entity-With-Content" class="tab-container menu"
+                    style="display:none">
+                    <h2>Display with Email Body</h2>
                     <div id="entityResults">
-                        <!-- <div class="entity-sentence">We are aligned to the clearance funding of $<span style="color:#7128DA; font-weight:bold">202,548</span><span><sub style="font-weight: bold">MONEY</sub></span></div> -->
+                        <div class="entity-sentence">We are aligned to the clearance funding of $<span style="color:#7128DA; font-weight:bold">202,548</span><span><sub style="font-weight: bold">MONEY</sub></span></div>
                     </div>
                 </div>
 
             </main>
         </div>
         <script>
-
-    </script>
+            function toggleMenu(evt, menuName) {
+                var i, x, tablinks;
+                x = document.getElementsByClassName("menu");
+                for (i = 0; i < x.length; i++) {
+                    x[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablink");
+                for (i = 0; i < x.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" menu-active", "");
+                }
+                document.getElementById(menuName).style.display = "block";
+                evt.currentTarget.className += " menu-active";
+            }
+        </script>
     </body>
 </html>

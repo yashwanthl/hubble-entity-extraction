@@ -5,20 +5,39 @@
 
 /* global document, Office */
 Office.onReady(info => {
-  if (info.host === Office.HostType.Outlook) {
-    testCORS();
+  if (info.host === Office.HostType.Outlook) {    
+    // testCORS();
     document.getElementById("sideload-msg").style.display = "none";
     document.getElementById("app-body").style.display = "flex";
-    document.getElementById("btnGetEntities").onclick = extractEntities;
+    // document.getElementById("btnGetEntities").onclick = extractEntities;
+    if (testthis()){
+      extractEntities();
+    }
   }
 });
 
+function testthis(){
+  let isSuccess = false
+  let i = 1;
+  while(!isSuccess && i <= 10) {
+    console.log("Try: " + i);
+    isSuccess = testCORS();
+    if (isSuccess){
+      break;
+    }
+    i++;
+  }
+  return isSuccess
+}
+
 function testCORS() {
-  let url = 'https://hubbleentity.azurewebsites.net/';
+  // let url = 'https://hubbleentity.azurewebsites.net/';
+  let url ="https://hubbleentityextract.azurewebsites.net/"
   // let url = 'https://hubbleentity.azurewebsites.net/extract?text=What is the price of Pixel 3&name=product annotaions';
   // let url = 'https://hubbleentity.azurewebsites.net/extract?text=What is the price of Pixel 3';
   // let url = "https://hubbleentity.azurewebsites.net/extract?text=Per our conversation, HP is aligned to help Walmart promote the What’s Your Color units (DeskJet 3722 – Blue, Purple and Pink) for another $10 off. To help fund this program, HP will fund $5.00 per unit for all on hand units to date (excluding units already sold) on top of the current front-end buy price received by Walmart ($43.66).";
   // let url = "https://hubbleinferenceapi.azurewebsites.net/extract/?text=Per our conversation, HP is aligned to help Walmart promote the What’s Your Color units (DeskJet 3722 – Blue, Purple and Pink) for another $10 off. To help fund this program, HP will fund $5.00 per unit for all on hand units to date (excluding units already sold) on top of the current front-end buy price received by Walmart ($43.66)."
+  let result = false;
   $.ajax({
     type: "GET",
     url: url,
@@ -26,12 +45,16 @@ function testCORS() {
     success: function(response) {
       console.log("Success - Test CORS");
       console.log(response);
+      result = true;
     },
     error: function(request, status, error) {
       console.log("Fail - Test CORS");
       console.log(error);
+      return false;
     }
   });
+
+  return result;
 }
 
 function extractEntities() {
@@ -102,7 +125,8 @@ function buildHtmlForEntities(allEntities) {
 function getEntities(text) {
   console.log("Getting entities for: " + text);
   let entities;
-  let url = "https://hubbleentity.azurewebsites.net/extract?text=" + text;
+  // let url = "https://hubbleentity.azurewebsites.net/extract?text=" + text;
+  let url = "https://hubbleentityextract.azurewebsites.net/extract?text=" + text;
   $.ajax({
     type: "GET",
     url: url,
