@@ -4,24 +4,24 @@
  */
 
 /* global document, Office */
+var baseURL = 'https://hubbleentity.azurewebsites.net/';
 Office.onReady(info => {
   if (info.host === Office.HostType.Outlook) {    
-    // testCORS();
     document.getElementById("sideload-msg").style.display = "none";
     document.getElementById("app-body").style.display = "flex";
     // document.getElementById("btnGetEntities").onclick = extractEntities;
-    if (testthis()){
+    if (testCORS()){
       extractEntities();
     }
   }
 });
 
-function testthis(){
+function testCORS(){
   let isSuccess = false
   let i = 1;
-  while(!isSuccess && i <= 10) {
+  while(!isSuccess && i <= 3) {
     console.log("Try: " + i);
-    isSuccess = testCORS();
+    isSuccess = getBaseURLResponse();
     if (isSuccess){
       break;
     }
@@ -30,13 +30,8 @@ function testthis(){
   return isSuccess
 }
 
-function testCORS() {
-  // let url = 'https://hubbleentity.azurewebsites.net/';
-  let url ="https://hubbleentityextract.azurewebsites.net/"
-  // let url = 'https://hubbleentity.azurewebsites.net/extract?text=What is the price of Pixel 3&name=product annotaions';
-  // let url = 'https://hubbleentity.azurewebsites.net/extract?text=What is the price of Pixel 3';
-  // let url = "https://hubbleentity.azurewebsites.net/extract?text=Per our conversation, HP is aligned to help Walmart promote the What’s Your Color units (DeskJet 3722 – Blue, Purple and Pink) for another $10 off. To help fund this program, HP will fund $5.00 per unit for all on hand units to date (excluding units already sold) on top of the current front-end buy price received by Walmart ($43.66).";
-  // let url = "https://hubbleinferenceapi.azurewebsites.net/extract/?text=Per our conversation, HP is aligned to help Walmart promote the What’s Your Color units (DeskJet 3722 – Blue, Purple and Pink) for another $10 off. To help fund this program, HP will fund $5.00 per unit for all on hand units to date (excluding units already sold) on top of the current front-end buy price received by Walmart ($43.66)."
+function getBaseURLResponse() {
+  let url = baseURL
   let result = false;
   $.ajax({
     type: "GET",
@@ -55,6 +50,68 @@ function testCORS() {
   });
 
   return result;
+}
+
+function setupEntities(allEntities){
+  console.log(allEntities);
+  let filteredEntities = []
+  allEntities.forEach(eachObj => {
+    if (eachObj["entities"].length > 0){
+      filteredEntities = filteredEntities.concat(eachObj["entities"])
+    }
+  });
+  console.log(filteredEntities);
+  filteredEntities.forEach(eachObj => {
+    delete eachObj["color"];
+    delete eachObj["end_char"];
+    delete eachObj["start_char"]
+  });
+  console.log(filteredEntities);
+  
+  var p = {
+    "ORG": ["HP", "Walmart"],
+    "Date": ["Oct", "1/1/21"]
+};
+
+  let objLabel = {};
+  filteredEntities.forEach(eachObj => {
+    let key = eachObj["label"]
+    if (objLabel.hasOwnProperty(key)) {
+      let words = objLabel[key];
+      if (!words.includes(eachObj["text"])){
+        words.push(eachObj["text"])
+      }
+    }
+    else {
+      objLabel[key] = [eachObj["text"]]
+    }
+  });
+  console.log(objLabel);
+  htmlForSetUpEntities(objLabel);
+}
+
+function htmlForSetUpEntities(objLabel){
+  let wholeHtml = ""
+  for (let key in objLabel) {
+    if (objLabel.hasOwnProperty(key)) {
+      let words = objLabel[key];
+      if (words.length > 0){
+        let html = '<div style="padding: 0.75em;">';
+        html += ('<div style="font-weight:bold">' + key + '</div>')
+        html += '<div style="padding: 0.5em;">';
+        html += '<ul style="list-style: square inside;">';
+        words.forEach(eachWord => {
+          html += ('<li>' + eachWord + '</li>');
+        });
+        html += '</ul>';
+        html += '</div>';
+        html += '</div>';
+        wholeHtml += html;
+      }
+    }
+  }
+  $('#display-entities-result').empty();
+  $('#display-entities-result').append(wholeHtml);
 }
 
 function extractEntities() {
@@ -89,6 +146,7 @@ function extractEntities() {
       }
     });
     buildHtmlForEntities(allEntities);
+    setupEntities(allEntities);
   });
 }
 
@@ -125,8 +183,7 @@ function buildHtmlForEntities(allEntities) {
 function getEntities(text) {
   console.log("Getting entities for: " + text);
   let entities;
-  // let url = "https://hubbleentity.azurewebsites.net/extract?text=" + text;
-  let url = "https://hubbleentityextract.azurewebsites.net/extract?text=" + text;
+  let url = baseURL + "extract?text=" + text;
   $.ajax({
     type: "GET",
     url: url,
