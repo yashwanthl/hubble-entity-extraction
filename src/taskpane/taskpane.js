@@ -130,6 +130,7 @@ function extractEntities() {
         let count = 0
         while (count <= 10 && (entities == undefined || entities == null)) {
           entities = getEntities(eachSentense);
+          entities = filterUnwantedLabels(entities);
           count++
         }
         let thisEntity = {
@@ -148,6 +149,19 @@ function extractEntities() {
     buildHtmlForEntities(allEntities);
     setupEntities(allEntities);
   });
+}
+
+function filterUnwantedLabels(entities){
+  let newArray = entities.filter(function (el) {
+    return el.label != "WORK_OF_ART" &&
+          el.label != "CARDINAL"
+  });
+  newArray.forEach(element => {
+    if (element["label"] == "MONTH_FIRST_DATE"){
+      element["label"] = "DATE"
+    }
+  });
+  return newArray;
 }
 
 function preprocess(emailText){
